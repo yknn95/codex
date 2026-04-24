@@ -7,7 +7,9 @@ use std::sync::atomic::AtomicBool;
 use std::sync::atomic::Ordering;
 
 pub(super) fn image_generation_tool_auth_allowed(auth_manager: Option<&AuthManager>) -> bool {
-    auth_manager.is_some_and(AuthManager::current_auth_uses_codex_backend)
+    auth_manager.is_some_and(|manager| {
+        manager.current_auth_uses_codex_backend() || manager.auth_mode() == Some(AuthMode::ApiKey)
+    })
 }
 
 #[derive(Clone, Debug)]
